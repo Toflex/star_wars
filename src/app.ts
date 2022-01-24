@@ -1,6 +1,5 @@
 import express, { Request, Response} from 'express';
 import { sequelizeConnection, InitTables } from "./db/configs";
-import redis = require('redis');
 import cors from 'cors';
 import { router } from './routes';
 import swaggerUI from "swagger-ui-express";
