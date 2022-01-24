@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  node-app:
+    depends_on:
+      - db
+    build: .
+    environment:
+      - SERVER_HOST=localhost
+      - SERVER_PORT=8080
+      - DB_NAME=mysql
+      - DB_USER=root
+      - DB_HOST=db
+      - DB_DRIVER=mysql
+      - DB_PASSWORD=my-secret-pw
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    
+  db:
+    image: 'mysql'
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=mysql
+      - MYSQL_PASSWORD=my-secret-pw
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '3306:3306'
