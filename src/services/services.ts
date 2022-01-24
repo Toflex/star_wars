@@ -6,7 +6,7 @@ import config =  require('../config');
 
 
 const rootAPI = "https://swapi.py4e.com/api";
-const HOST_URL = config.DEBUG ? `${config.HOST}:${config.PORT}`: config.HOST ;
+const HOST_URL = config.DEBUG == 'true' ? `${config.HOST}:${config.PORT}`: config.HOST ;
 
 // GetFilms
 export const GetFilms = async () => {
