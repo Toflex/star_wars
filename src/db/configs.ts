@@ -1,12 +1,12 @@
 import { DataTypes, Dialect, Sequelize } from "sequelize";
 import { FetchData } from "../services/services";
-require("dotenv").config();
+import config =  require('../config');
 
-const dbName = process.env.DB_NAME as string;
-const dbUser = process.env.DB_USER as string;
-const dbHost = process.env.DB_HOST as string;
-const dbDriver = process.env.DB_DRIVER as Dialect;
-const dbPassword = process.env.DB_PASSWORD;
+const dbName = config.DB_NAME as string;
+const dbUser = config.DBUSER as string;
+const dbHost = config.DB_HOST as string;
+const dbDriver = config.DIALECT as Dialect;
+const dbPassword = config.DB_PASSWORD;
 
 export const sequelizeConnection = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
@@ -178,7 +178,8 @@ export const PeopleModel = sequelizeConnection.define(
 
 // InitTables
 export const InitTables = async () => {
-  sequelizeConnection.sync({ force: false });
+  FilmModel.sync({ force: true });
+  PeopleModel.sync({ force: true });
  
   // Fetch Star War data
   await FetchData()

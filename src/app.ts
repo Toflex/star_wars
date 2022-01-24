@@ -5,13 +5,11 @@ import { router } from './routes';
 import swaggerUI from "swagger-ui-express";
 import { initAddComment, initGetComments,initGetFilms, initGetMovieCharacters } from './doc/init';
 import { initOpenApi, openApiInstance } from './doc/openapi';
-require('dotenv').config();
+import configs =  require('./config');
+
 
 const app = express();
 app.use(cors());
-
-
-const port = process.env.PORT || 3000;
 
 
 // Connect to mysql DB
@@ -50,7 +48,8 @@ app.all('*', (req:Request, res:Response) => {
 });
 
 
+
 // // Start Server
-app.listen(port, () => {
-  return console.log(`Express is listening at http://localhost:${port}`);
+app.listen(configs.PORT, () => {
+  return console.log(`Express is listening at ${configs.PORT}`);
 });

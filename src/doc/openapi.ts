@@ -1,10 +1,8 @@
 import { Application } from "express";
 import { bearerAuth, OpenApi } from "ts-openapi";
 import swaggerUi from "swagger-ui-express";
-require('dotenv').config();
+import config =  require('../config');
 
-const Base_Url = process.env.SERVER_HOST as string
-const port = process.env.SERVER_PORT as string
 
 // create an OpenApi instance to store definitions
 export const openApiInstance = new OpenApi(
@@ -15,7 +13,7 @@ export const openApiInstance = new OpenApi(
 );
 
 // declare servers for the API
-openApiInstance.setServers([{ url: `${Base_Url}:${port}` }]);
+openApiInstance.setServers([{ url: config.HOST }]);
 
 // set API license
 openApiInstance.setLicense(

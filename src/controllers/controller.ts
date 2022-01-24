@@ -1,4 +1,3 @@
-import { create } from "domain";
 import { Request, Response } from "express";
 import { CommentModel, FilmModel, PeopleModel } from "../db/configs";
 import { Comment } from "../db/models/model";

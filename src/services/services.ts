@@ -2,10 +2,11 @@ import axios from "axios";
 import { FilmModel, PeopleModel } from "../db/configs";
 import { Film, Planet, People } from "../db/models/model";
 import { ExtractIDFromURL } from "../utility/helper";
-require("dotenv").config();
+import config =  require('../config');
+
 
 const rootAPI = "https://swapi.py4e.com/api";
-const HOST_URL = process.env.SERVER_HOST as string;
+const HOST_URL = config.DEBUG ? `${config.HOST}:${config.PORT}`: config.HOST ;
 
 // GetFilms
 export const GetFilms = async () => {
