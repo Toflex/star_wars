@@ -19,7 +19,7 @@ const cacheSuccesses = cache('5 minutes', onlyStatus200)
 const router = express.Router();
 
 
-router.get("/", cacheSuccesses, GetFilms);
+router.get("/", GetFilms);
 
 router.get("/:id/comments", GetComments);
 router.post("/:id/comments", AddComment);
