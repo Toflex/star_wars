@@ -8,13 +8,9 @@ const dbHost = process.env.DB_HOST as string;
 const dbDriver = process.env.DB_DRIVER as Dialect;
 const dbPassword = process.env.DB_PASSWORD;
 
-// export const sequelizeConnection = new Sequelize(dbName, dbUser, dbPassword, {
-//   host: dbHost,
-//   dialect: dbDriver,
-// });
-export const sequelizeConnection = new Sequelize("mysql", "root", "my-secret-pw", {
-  host: "0.0.0.0",
-  dialect: "mysql",
+export const sequelizeConnection = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbHost,
+  dialect: dbDriver,
 });
 
 export const FilmModel = sequelizeConnection.define(
