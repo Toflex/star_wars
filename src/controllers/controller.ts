@@ -23,6 +23,14 @@ export const GetFilm = async (req: Request, res: Response) => {
     },
     order: [["release_date", "ASC"]],
   });
+  if (film==null){
+    return res
+      .status(404)
+      .json({
+        status: "error",
+        message: `Movie with id ${id} not found!`,
+      });
+  }
   return res.json({ status: "success", data: film });
 };
 

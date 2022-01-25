@@ -13,7 +13,7 @@ export const openApiInstance = new OpenApi(
 );
 
 // declare servers for the API
-openApiInstance.setServers([{ url: config.HOST }]);
+openApiInstance.setServers([{ url: config.DEBUG == 'true' ? `${config.HOST}:${config.PORT}`: config.HOST }]);
 
 // set API license
 openApiInstance.setLicense(
