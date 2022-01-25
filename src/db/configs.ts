@@ -135,12 +135,13 @@ export const PeopleModel = sequelizeConnection.define(
 
 
 // InitTables
-export const InitTables = async () => {
-  await (async()=>{
-    FilmModel.sync({ force: true });
-    PeopleModel.sync({ force: true });
- })()
- 
-  // Fetch Star War data
-  await FetchData()
+export const InitTables = () => {
+    FilmModel.sync({ force: true })
+    .then(()=>{
+      PeopleModel.sync({ force: true })
+      .then(async()=>{
+        // Fetch Star War data
+        await FetchData()
+      }).catch(console.error)
+    }).catch(console.error);
 };

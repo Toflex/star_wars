@@ -6,6 +6,7 @@ import swaggerUI from "swagger-ui-express";
 import { initAddComment, initGetComments,initGetFilms, initGetFilm, initGetMovieCharacters } from './doc/init';
 import { initOpenApi, openApiInstance } from './doc/openapi';
 import configs =  require('./configs/env');
+import { FetchData } from './services/services';
 
 
 const app = express();
@@ -39,7 +40,9 @@ initGetComments(app, openApiInstance);
 initOpenApi(app, openApiInstance);
 
 
-app.get('/ping', (req:Request, res:Response) => {
+app.get('/ping', async (req:Request, res:Response) => {
+    
+  await FetchData()
     res.status(200).json({"message":'Pong...'});
 });
 
