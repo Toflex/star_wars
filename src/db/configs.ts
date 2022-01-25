@@ -1,6 +1,6 @@
 import { DataTypes, Dialect, Sequelize } from "sequelize";
 import { FetchData } from "../services/services";
-import config =  require('../config');
+import config =  require('../configs/env');
 
 const dbName = config.DB_NAME as string;
 const dbUser = config.DBUSER as string;
@@ -102,6 +102,9 @@ export const PeopleModel = sequelizeConnection.define(
     height: {
       type: DataTypes.STRING
     },
+    elevation: {
+      type: DataTypes.STRING
+    },
     mass: {
       type: DataTypes.STRING,
     },
@@ -129,51 +132,6 @@ export const PeopleModel = sequelizeConnection.define(
     }]
   }
 );
-
-
-// export const PlanetModel = sequelizeConnection.define(
-//   "PlanetTable",
-//   {
-//     id: {
-//       type: DataTypes.BIGINT,
-//       primaryKey: true
-//     },
-//     name: {
-//       type: DataTypes.STRING
-//     },
-//     rotation_period: {
-//       type: DataTypes.STRING
-//     },
-//     orbital_period: {
-//       type: DataTypes.INTEGER
-//     },
-//     diameter: {
-//       type: DataTypes.STRING,
-//     },
-//     climate: {
-//       type: DataTypes.STRING,
-//     },
-//     gravity: {
-//       type: DataTypes.STRING,
-//     },
-//     terrain: {
-//       type: DataTypes.INTEGER
-//     },
-//     surface_water: {
-//       type: DataTypes.STRING,
-//     },
-//     population: {
-//       type: DataTypes.STRING,
-//     }
-//   },
-//   {
-//     freezeTableName: true,
-//     indexes: [{
-//       unique: true,
-//       fields: ['id']
-//     }]
-//   }
-// );
 
 
 // InitTables

@@ -15,72 +15,91 @@ export const GetFilms = async (req: Request, res: Response) => {
   return res.json({ status: "success", data: films });
 };
 
+export const GetFilm = async (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const film = await FilmModel.findByPk(id, {
+    attributes: {
+      exclude: ["characters", "created", "createdAt", "updatedAt"],
+    },
+    order: [["release_date", "ASC"]],
+  });
+  return res.json({ status: "success", data: film });
+};
+
 export const GetComments = async (req: Request, res: Response) => {
-  const page = Number(req.query.page as string) || 1;
+  let page = Number(req.query.page as string) || 1;
+  page = page < 1 ? 1 : page;
 
   const { count, rows } = await CommentModel.findAndCountAll({
     where: {
       episode_id: req.params.id,
     },
     attributes: {
-      exclude: ["IPAddress"]
+      exclude: ["createdAt", "updatedAt"],
     },
     order: [["created", "DESC"]],
-    offset: (page * pageSize) - pageSize,
+    offset: page * pageSize - pageSize,
     limit: pageSize,
   });
 
   return res.json({
     status: "success",
-    data: { results: rows, ...Paginate(req, count, page) },
+    data: { results: rows, ...Paginate(req, count, page, pageSize) },
   });
 };
 
 export const AddComment = async (req: Request, res: Response) => {
-
-    const id = req.params.id as string || null
-    const film = await FilmModel.findByPk(id)
-    if (film === null) {
-        return res
+  const id = (req.params.id as string) || null;
+  const film = await FilmModel.findByPk(id);
+  if (film === null) {
+    return res
       .status(404)
-      .json({ status: "error", message: `Comment could not be added. Film with id ${id} not found!` });
-      }
+      .json({
+        status: "error",
+        message: `Comment could not be added. Film with id ${id} not found!`,
+      });
+  }
 
-    //   body: {message, author} message length 500 characters.
-      const body = {...req.body}
+  //   body: {message, author} message length 500 characters.
+  const body = { ...req.body };
 
-      if (!body.message){
-        return res
-        .status(404)
-        .json({ status: "error", message: `Comment could not be added. Message cannot be empty!` });  
-      }
-      const comment: Comment = {
-        IPAddress: req.ip,
-        message: body.message.trim().substring(0,500),
-        episode_id: Number(id),
-        author_name: body.author || "anonymous",
-        created: new Date().toUTCString()
-      }
+  if (!body.message) {
+    return res
+      .status(404)
+      .json({
+        status: "error",
+        message: `Comment could not be added. Message cannot be empty!`,
+      });
+  }
+  const comment: Comment = {
+    IPAddress: req.ip,
+    message: body.message.trim().substring(0, 500),
+    episode_id: Number(id),
+    author_name: body.author || "anonymous",
+    created: new Date().toUTCString(),
+  };
 
-      const result = CommentModel.create(comment)
-        if(result!=null){
-          const comment_count = film.getDataValue("comment_count")
-          console.log(`Comments: ${comment_count}`);
-          
-          await film.update({comment_count: comment_count+1})
+  const result = CommentModel.create(comment);
+  if (result != null) {
+    const comment_count = film.getDataValue("comment_count");
+    console.log(`Comments: ${comment_count}`);
 
-        return res.status(201).json({
-            status: "success",
-            message: "Comment has been added"
-          });
-        }
-      else {
-          console.error(`An error occured when adding a comment.`);
-          
-        return res
-        .status(404)
-        .json({ status: "error", message: `Comment could not be added. Please try again!` });  
-      }
+    await film.update({ comment_count: comment_count + 1 });
+
+    return res.status(201).json({
+      status: "success",
+      message: "Comment has been added",
+    });
+  } else {
+    console.error(`An error occured when adding a comment.`);
+
+    return res
+      .status(404)
+      .json({
+        status: "error",
+        message: `Comment could not be added. Please try again!`,
+      });
+  }
 };
 
 export const GetMovieCharacters = async (req: Request, res: Response) => {
@@ -118,15 +137,15 @@ export const GetMovieCharacters = async (req: Request, res: Response) => {
   });
 
   const TotalHeight = characters
-    .map((f) => Number(f.getDataValue("height")))
-    .reduce((a, b) => a + b);
+    ?.map((f) => Number(f.getDataValue("height")))
+    ?.reduce((a, b) => a + b);
 
   return res.json({
     status: "success",
     data: {
       characters,
       count: characters.length,
-      height: CM2FeetInch(TotalHeight),
+      total_height: CM2FeetInch(TotalHeight.toString()),
     },
   });
 };

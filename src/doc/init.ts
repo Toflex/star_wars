@@ -1,6 +1,12 @@
 import { Application } from "express";
 import { OpenApi, Types } from "ts-openapi";
-import { AddComment, GetComments, GetFilms, GetMovieCharacters } from "../controllers/controller";
+import {
+  AddComment,
+  GetComments,
+  GetFilm,
+  GetFilms,
+  GetMovieCharacters,
+} from "../controllers/controller";
 
 // body response schema
 const genericResponseSchema = Types.Object({
@@ -18,42 +24,37 @@ const genericResponseSchema = Types.Object({
   },
 });
 
+// initGetFilms
 export function initGetFilms(app: Application, openApi: OpenApi) {
   app.get("/", GetFilms);
 
-    // body response schema
-    const responseSchema = Types.Object({
-      description: "Server response",
-      properties: {
-        status: Types.String({
-          description: "Request status",
-          example: "success/error",
-        }),
-        data: Types.Object({
-          description: "Returns all movies",
+  const responseSchema = Types.Object({
+    description: "Server response",
+    properties: {
+      status: Types.String({
+        description: "Request status",
+        example: "success/error",
+      }),
+      data: Types.Array({
+        arrayType: Types.Object({
+          description: "Array of movies",
           properties: {
-            results: Types.Array({
-              arrayType: Types.Object({
-                properties: {
-                  title: Types.String(),
-                  episode_id: Types.Integer(),
-                  opening_crawl: Types.String(),
-                  character_count: Types.Integer(),
-                  characters_url: Types.String(),
-                  comments: Types.String(),
-                  comment_count: Types.Integer(),
-                  director: Types.String(),
-                  producer: Types.String(),
-                  release_date: Types.Date(),
-                },
-            }),
-            description: "Array of movies"
-            }),
-           }
-        })
-      },
-    });
-
+            title: Types.String(),
+            episode_id: Types.Integer(),
+            opening_crawl: Types.String(),
+            character_count: Types.Integer(),
+            characters_url: Types.String(),
+            comments: Types.String(),
+            comment_count: Types.Integer(),
+            director: Types.String(),
+            producer: Types.String(),
+            release_date: Types.Date(),
+          },
+        }),
+      }),
+    },
+  });
+  
   // declare our API
   openApi.addPath(
     "/", // this is API path
@@ -66,10 +67,7 @@ export function initGetFilms(app: Application, openApi: OpenApi) {
         operationId: "GetFilms",
         responses: {
           // here we declare the response types
-          200: openApi.declareSchema(
-            "Get movie list success",
-            responseSchema
-          ),
+          200: openApi.declareSchema("Get movie list success", responseSchema),
         },
         tags: ["Star Wars Apis"], // these tags group your methods in UI
       },
@@ -78,6 +76,67 @@ export function initGetFilms(app: Application, openApi: OpenApi) {
   );
 }
 
+// initGetFilm
+export function initGetFilm(app: Application, openApi: OpenApi) {
+  app.get("movie/:id", GetFilm);
+
+  // body response schema
+  const responseSchema = Types.Object({
+    description: "Server response",
+    properties: {
+      status: Types.String({
+        description: "Request status",
+        example: "success/error",
+      }),
+      data: Types.Object({
+        description: "An object of a movie",
+        properties: {
+          title: Types.String(),
+          episode_id: Types.Integer(),
+          opening_crawl: Types.String(),
+          character_count: Types.Integer(),
+          characters_url: Types.String(),
+          comments: Types.String(),
+          comment_count: Types.Integer(),
+          director: Types.String(),
+          producer: Types.String(),
+          release_date: Types.Date(),
+        },
+      }),
+    },
+  });
+
+  // declare our API
+  openApi.addPath(
+    "movie/:id", // this is API path
+    {
+      // API method
+      get: {
+        description: "Get Star wars film episode details", // Method description
+        summary:
+          "Get Star wars film episode details", // Method summary
+        operationId: "GetFilm",
+        requestSchema: {
+          params: {
+            id: Types.Number({
+              description: "Film ID",
+              required: true, // param values MUST be required
+              example: 2
+            }),
+          }
+        },
+        responses: {
+          // here we declare the response types
+          200: openApi.declareSchema("Get movie list success", responseSchema),
+        },
+        tags: ["Star Wars Apis"], // these tags group your methods in UI
+      },
+    },
+    true // make method visible
+  );
+}
+
+// initGetComments
 export function initGetComments(app: Application, openApi: OpenApi) {
   app.get("/:id/comments", GetComments);
 
@@ -98,19 +157,18 @@ export function initGetComments(app: Application, openApi: OpenApi) {
           results: Types.Array({
             arrayType: Types.Object({
               properties: {
-                  id: Types.Integer(),
-                  episode_id: Types.Integer(),
-                  author_name: Types.String(),
-                  message: Types.String(),
-                  created: Types.String(),
+                id: Types.Integer(),
+                episode_id: Types.Integer(),
+                author_name: Types.String(),
+                message: Types.String(),
+                created: Types.String(),
               },
+            }),
           }),
-          description: "Array of comments"
-          }),
-          next: Types.String({description: "link to next page"}),
-          count: Types.Integer({description: "Total number of comments"}),
-        }
-      })
+          next: Types.String({ description: "link to next page" }),
+          count: Types.Integer({ description: "Total number of comments" }),
+        },
+      }),
     },
   });
 
@@ -133,10 +191,7 @@ export function initGetComments(app: Application, openApi: OpenApi) {
           },
         },
         responses: {
-          200: openApi.declareSchema(
-            "Get comment success",
-            responseSchema
-          ),
+          200: openApi.declareSchema("Get comment success", responseSchema),
         },
         tags: ["Star Wars Apis"], // these tags group your methods in UI
       },
@@ -145,6 +200,7 @@ export function initGetComments(app: Application, openApi: OpenApi) {
   );
 }
 
+// initAddComment
 export function initAddComment(app: Application, openApi: OpenApi) {
   app.post("/:id/comments", AddComment);
 
@@ -201,7 +257,7 @@ export function initAddComment(app: Application, openApi: OpenApi) {
   );
 }
 
-
+// initGetMovieCharacters
 export function initGetMovieCharacters(app: Application, openApi: OpenApi) {
   app.get("/:id/characters", GetMovieCharacters);
 
@@ -219,23 +275,26 @@ export function initGetMovieCharacters(app: Application, openApi: OpenApi) {
           characters: Types.Array({
             arrayType: Types.Object({
               properties: {
-                  id: Types.Integer(),
-                  name: Types.String(),
-                  height: Types.String(),
-                  mass: Types.String(),
-                  hair_color: Types.String(),
-                  skin_color: Types.String(),
-                  eye_color: Types.String(),
-                  birth_year: Types.String(),
-                  gender: Types.String()
+                id: Types.Integer(),
+                name: Types.String(),
+                height: Types.String(),
+                elevation: Types.String(),
+                mass: Types.String(),
+                hair_color: Types.String(),
+                skin_color: Types.String(),
+                eye_color: Types.String(),
+                birth_year: Types.String(),
+                gender: Types.String(),
               },
+            }),
           }),
-          description: "Array of comments"
+          height: Types.String({
+            description:
+              "Returns the total height of all characters in feet and inches.",
           }),
-          height: Types.String({description: "Returns the total height of all characters in feet and inches."}),
-          count: Types.Integer({description: "Total number of characters"}),
-        }
-      })
+          count: Types.Integer({ description: "Total number of characters" }),
+        },
+      }),
     },
   });
 
@@ -259,22 +318,19 @@ export function initGetMovieCharacters(app: Application, openApi: OpenApi) {
           query: {
             sort: Types.String({
               description: "options: {'name', 'height', 'gender'}",
-              example: "name"
+              example: "name",
             }),
             order: Types.String({
               description: "ASC for Ascending or DESC for decending",
-              example: "ASC"
+              example: "ASC",
             }),
             gender: Types.String({
-              example: "male"
+              example: "male",
             }),
-          }
+          },
         },
         responses: {
-          200: openApi.declareSchema(
-            "Get comment success",
-            responseSchema
-          ),
+          200: openApi.declareSchema("Get comment success", responseSchema),
         },
         tags: ["Star Wars Apis"], // these tags group your methods in UI
       },

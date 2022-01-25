@@ -1,12 +1,13 @@
 import axios from "axios";
 import { FilmModel, PeopleModel } from "../db/configs";
 import { Film, Planet, People } from "../db/models/model";
-import { ExtractIDFromURL } from "../utility/helper";
-import config =  require('../config');
+import { CM2FeetInch, ExtractIDFromURL } from "../utility/helper";
+import config =  require('../configs/env');
 
 
 const rootAPI = "https://swapi.py4e.com/api";
 const HOST_URL = config.DEBUG == 'true' ? `${config.HOST}:${config.PORT}`: config.HOST ;
+
 
 // GetFilms
 export const GetFilms = async () => {
@@ -67,6 +68,7 @@ export const GetPeople = async () => {
             id: Number(ExtractIDFromURL(r.url)),
             name: r.name,
             height: r.height,
+            elevation: CM2FeetInch(r.height),
             mass: r.mass,
             hair_color: r.hair_color,
             skin_color: r.skin_color,

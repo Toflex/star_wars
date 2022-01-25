@@ -1,7 +1,7 @@
 import { Application } from "express";
-import { bearerAuth, OpenApi } from "ts-openapi";
+import { OpenApi } from "ts-openapi";
 import swaggerUi from "swagger-ui-express";
-import config =  require('../config');
+import config =  require('../configs/env');
 
 
 // create an OpenApi instance to store definitions

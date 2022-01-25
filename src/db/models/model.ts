@@ -43,6 +43,7 @@ export type People = {
     id: number
     name: string
     height: string
+    elevation: string
     mass: string
     hair_color: string
     skin_color: string

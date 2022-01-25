@@ -3,9 +3,9 @@ import { sequelizeConnection, InitTables } from "./db/configs";
 import cors from 'cors';
 import { router } from './routes';
 import swaggerUI from "swagger-ui-express";
-import { initAddComment, initGetComments,initGetFilms, initGetMovieCharacters } from './doc/init';
+import { initAddComment, initGetComments,initGetFilms, initGetFilm, initGetMovieCharacters } from './doc/init';
 import { initOpenApi, openApiInstance } from './doc/openapi';
-import configs =  require('./config');
+import configs =  require('./configs/env');
 
 
 const app = express();
@@ -24,12 +24,13 @@ sequelizeConnection.authenticate()
 
 
 app.use(express.json())
-app.use("/", router)
-app.use('/api-docs',swaggerUI.serve,swaggerUI.setup());
 
+app.use('/api-docs',swaggerUI.serve,swaggerUI.setup());
+app.use("/", router)
 
 // declare our hello world api
 initGetFilms(app, openApiInstance);
+initGetFilm(app, openApiInstance);
 initGetMovieCharacters(app, openApiInstance);
 initAddComment(app, openApiInstance);
 initGetComments(app, openApiInstance);
@@ -46,7 +47,6 @@ app.get('/ping', (req:Request, res:Response) => {
 app.all('*', (req:Request, res:Response) => {
     res.status(404).json({"message":'Not Found!'});
 });
-
 
 
 // // Start Server

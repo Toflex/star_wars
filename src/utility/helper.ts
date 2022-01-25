@@ -1,5 +1,4 @@
 import { Request } from "express";
-import url from "url";
 
 export const ExtractIDFromURL = (url: string): string => {
   let arr = url.split("/");
@@ -8,8 +7,13 @@ export const ExtractIDFromURL = (url: string): string => {
 };
 
 // CM2FeetInch returns an object containing the value of CM to feet and inches
-export const CM2FeetInch = (height: number): string => {
-  let ft = height * 0.0328084;
+export const CM2FeetInch = (height: string): string => {
+
+  if(isNaN(Number(height))) {
+    return height
+  }
+
+  let ft = Number(height) * 0.0328084;
   let feet = Math.trunc(ft);
 
   let inch = ((ft - feet) * 12).toFixed(2);
@@ -20,25 +24,20 @@ export const CM2FeetInch = (height: number): string => {
 export const Paginate = (
   req: Request,
   totalItems: number,
-  currentPage: number
+  currentPage: number,
+  pageSize: number
 ): Object => {
-  let next = req.protocol + "://" + req.get("host") + req.path;
-  const query = req.query;
+  let next = null;
+  var url = new URL(req.protocol + "://" + req.get("host") + req.originalUrl);
+  var search_params = url.searchParams;
 
-  const TotalPages = Math.round(totalItems / currentPage);
+  const TotalPages = Math.ceil(totalItems / pageSize);
 
-  if(currentPage < TotalPages){
-      next+= "?"
-  for (var x in query) {
-    if (x === "page") {
-      next += `page=${currentPage + 1}`;
-    } else {
-        next += `${x}=${query[x]}`
-    }
+  if (currentPage < TotalPages) {
+    search_params.set("page", (currentPage + 1).toString());
+    url.search = search_params.toString();
+    next = url.toString();
   }
-} else {
-    next = null
-}
 
   return { next, count: totalItems };
 };
