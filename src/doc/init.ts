@@ -78,7 +78,7 @@ export function initGetFilms(app: Application, openApi: OpenApi) {
 
 // initGetFilm
 export function initGetFilm(app: Application, openApi: OpenApi) {
-  app.get("movie/:id", GetFilm);
+  app.get("/movie/:id", GetFilm);
 
   // body response schema
   const responseSchema = Types.Object({
@@ -138,7 +138,7 @@ export function initGetFilm(app: Application, openApi: OpenApi) {
 
 // initGetComments
 export function initGetComments(app: Application, openApi: OpenApi) {
-  app.get("/:id/comments", GetComments);
+  app.get("/movie/:id/comments", GetComments);
 
   // body response schema
   const responseSchema = Types.Object({
@@ -174,7 +174,7 @@ export function initGetComments(app: Application, openApi: OpenApi) {
 
   // declare our API
   openApi.addPath(
-    "/:id/comments", // this is API path
+    "/movie/:id/comments", // this is API path
     {
       // API method
       get: {
@@ -202,7 +202,7 @@ export function initGetComments(app: Application, openApi: OpenApi) {
 
 // initAddComment
 export function initAddComment(app: Application, openApi: OpenApi) {
-  app.post("/:id/comments", AddComment);
+  app.post("/movie/:id/comments", AddComment);
 
   const commonProperties = {
     message: Types.String({
@@ -218,7 +218,7 @@ export function initAddComment(app: Application, openApi: OpenApi) {
 
   // declare our API
   openApi.addPath(
-    "/:id/comments", // this is API path
+    "/movie/:id/comments", // this is API path
     {
       // API method
       post: {
@@ -259,7 +259,7 @@ export function initAddComment(app: Application, openApi: OpenApi) {
 
 // initGetMovieCharacters
 export function initGetMovieCharacters(app: Application, openApi: OpenApi) {
-  app.get("/:id/characters", GetMovieCharacters);
+  app.get("/movie/:id/characters", GetMovieCharacters);
 
   // body response schema
   const responseSchema = Types.Object({
@@ -300,7 +300,7 @@ export function initGetMovieCharacters(app: Application, openApi: OpenApi) {
 
   // declare our API
   openApi.addPath(
-    "/:id/characters", // this is API path
+    "/movie/:id/characters", // this is API path
     {
       // API method
       get: {

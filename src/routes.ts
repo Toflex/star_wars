@@ -14,10 +14,10 @@ const router = express.Router();
 router.get("/", GetFilms);
 router.get("/movie/:id", GetFilm);
 
-router.get("/:id/comments", GetComments);
-router.post("/:id/comments", AddComment);
+router.get("/movie/:id/comments", GetComments);
+router.post("/movie/:id/comments", AddComment);
 
-router.get("/:id/characters", GetMovieCharacters);
+router.get("/movie/:id/characters", GetMovieCharacters);
 
 
 
