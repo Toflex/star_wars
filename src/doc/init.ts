@@ -108,7 +108,7 @@ export function initGetFilm(app: Application, openApi: OpenApi) {
 
   // declare our API
   openApi.addPath(
-    "movie/:id", // this is API path
+    "/movie/:id", // this is API path
     {
       // API method
       get: {
